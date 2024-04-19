@@ -1,6 +1,17 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## 🧙‍♂️ OpenCourse Proxy Downloader Project
+<p align="left">
+  <img style="height:100px;" src="https://github.com/jshsakura/oc-downloader/blob/master/public/logo256.png?raw=true"></img>
+</p>
+<br/>
+
+### :grinning: This is a project currently under development.
+리액트 + Tauri 기반의 멀티 OS용 파일 다운로더 개발
+<br/>
+<br/>
+
 
 ## Getting Started
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 First, run the development server:
 
@@ -35,5 +46,10 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
-### theme
-https://github.com/estevanmaito/windmill-dashboard-react
+## DEV Run !!
+```
+yarn test
+```
+
+## Theme
+:joy_cat: [JoyUI](https://mui.com/joy-ui/getting-started/templates/)
