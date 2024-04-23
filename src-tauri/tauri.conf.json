@@ -20,6 +20,10 @@
 				"all": true,
 				"open": true,
 				"save": true
+			},
+			"clipboard": {
+				"readText": true,
+				"writeText": true
 			}
 		},
 		"bundle": {
@@ -67,7 +71,9 @@
 				"height": 620,
 				"resizable": true,
 				"title": "Opencourse Proxy",
-				"width": 1000
+				"width": 1000,
+				"minHeight": 620,
+				"minWidth": 1000
 			}
 		]
 	}
