@@ -4,7 +4,7 @@
 use rusqlite::{Connection, Result};
 use tauri::command;
 use reqwest::{Client};
-use reqwest::header::{HeaderMap, HeaderValue, REFERER, USER_AGENT};
+use reqwest::header::{HeaderMap, HeaderValue, REFERER, USER_AGENT,CACHE_CONTROL, ACCEPT, ACCEPT_ENCODING, ACCEPT_LANGUAGE, CONNECTION};
 use std::collections::HashMap;
 use scraper::{Html, Selector};
 use serde::{Deserialize, Serialize};
@@ -91,6 +91,12 @@ async fn ouo_bypass(url: String) -> Result<BypassOutput, String> {
     let mut headers = HeaderMap::new();
     headers.insert(REFERER, HeaderValue::from_static("http://www.google.com/ig/adde?moduleurl="));
     headers.insert(USER_AGENT, HeaderValue::from_static("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36"));
+    headers.insert(ACCEPT, HeaderValue::from_static("text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"));
+    headers.insert(ACCEPT_LANGUAGE, HeaderValue::from_static("en-US,en;q=0.5"));
+    headers.insert(ACCEPT_ENCODING, HeaderValue::from_static("gzip, deflate, br"));
+    headers.insert(CONNECTION, HeaderValue::from_static("keep-alive"));
+    headers.insert("Upgrade-Insecure-Requests", HeaderValue::from_static("1"));
+    headers.insert(CACHE_CONTROL, HeaderValue::from_static("max-age=0"));
 
     let res = client.get(&temp_url)
         .headers(headers.clone())
@@ -99,6 +105,10 @@ async fn ouo_bypass(url: String) -> Result<BypassOutput, String> {
         .map_err(|e| format!("Error sending initial request: {}", e))?;
 
     println!("Initial response status: {}", res.status());
+    if res.status() != reqwest::StatusCode::OK {
+        return Err(format!("Unexpected response status: {}", res.status()));
+    }
+    
     let res_headers = res.headers().clone();
     let text = res.text().await.map_err(|e| format!("Failed to read response text: {}", e))?;
     println!("Parsing HTML to extract form data.");
