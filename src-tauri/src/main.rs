@@ -3,10 +3,11 @@
 
 use rusqlite::{Connection, Result};
 use tauri::command;
-use cf_reqwest::{Client, header::{HeaderMap, HeaderValue, REFERER, USER_AGENT}};
+use reqwest::{Client};
+use reqwest::header::{HeaderMap, HeaderValue, REFERER, USER_AGENT};
+use std::collections::HashMap;
 use scraper::{Html, Selector};
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use tokio;
 
 #[tokio::main]
@@ -79,41 +80,96 @@ struct BypassOutput {
 
 #[command]
 async fn ouo_bypass(url: String) -> Result<BypassOutput, String> {
+    let client = Client::builder()
+        .cookie_store(true)
+        .build()
+        .map_err(|e| format!("Error creating client: {}", e))?;
+
+    println!("Requesting URL: {}", url.replace("ouo.press", "ouo.io"));
     let temp_url = url.replace("ouo.press", "ouo.io");
-    let _id = temp_url.split('/').last().ok_or("Invalid URL")?;
 
     let mut headers = HeaderMap::new();
+    headers.insert(REFERER, HeaderValue::from_static("http://www.google.com/ig/adde?moduleurl="));
+    headers.insert(USER_AGENT, HeaderValue::from_static("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36"));
 
-    let res = cf_reqwest::blocking::get(&temp_url)
+    let res = client.get(&temp_url)
+        .headers(headers.clone())
         .send()
         .await
         .map_err(|e| format!("Error sending initial request: {}", e))?;
 
     println!("Initial response status: {}", res.status());
-    println!("Response headers: {:?}", res.headers());
-
-    if let Some(location) = res.headers().get("Location") {
-        let location_str = location.to_str().map_err(|e| e.to_string())?;
-        return Ok(BypassOutput {
-            original_link: url,
-            bypassed_link: Some(location_str.to_string()),
-        });
-    }
-
+    let res_headers = res.headers().clone();
     let text = res.text().await.map_err(|e| format!("Failed to read response text: {}", e))?;
-    println!("Response body: {}", text);
+    println!("Parsing HTML to extract form data.");
+    let (action_url, mut form_data) = extract_form_data(&text)?;
 
-    let html = Html::parse_document(&text);
+    // 사용자 입력 URL을 폼 데이터에 추가
+    form_data.insert("url".to_string(), url.clone());
+
+    println!("Submitting form data to {}", action_url);
+    println!("Data being submitted: {:?}", form_data);
+
+    let final_url = submit_form_data(&client, &action_url, &form_data, &res_headers)
+        .await
+        .map_err(|e| format!("Error submitting form: {}", e))?;
+
+    println!("Redirection URL: {}", final_url);
+    Ok(BypassOutput {
+        original_link: url,
+        bypassed_link: Some(final_url),
+    })
+}
+
+
+// HTML parsing and form data extraction function
+fn extract_form_data(html: &str) -> Result<(String, HashMap<String, String>), String> {
+    let document = Html::parse_document(html);
     let form_selector = Selector::parse("form").unwrap();
-    let input_selector = Selector::parse("input[name]").unwrap();
+    let form = document.select(&form_selector).next().ok_or("Form not found")?;
 
-    let form = html.select(&form_selector).next().ok_or("Form not found")?;
+    let action = form.value().attr("action").ok_or("Action URL not found")?.to_string();
     let mut data = HashMap::new();
+    let input_selector = Selector::parse("input[name]").unwrap();
     for input in form.select(&input_selector) {
         let name = input.value().attr("name").ok_or("Missing input name")?.to_string();
         let value = input.value().attr("value").unwrap_or_default().to_string();
-        data.insert(name, value);
+        data.insert(name.clone(), value.clone());
+        println!("Extracted input: {} = {}", name, value);
+    }
+    Ok((action, data))
+}
+
+// Function to submit form data and log the server response
+async fn submit_form_data(client: &Client, action_url: &str, data: &HashMap<String, String>, headers: &HeaderMap) -> Result<String, String> {
+    println!("Submitting to URL: {}", action_url);
+    println!("Data being submitted: {:?}", data);
+    let response = client.post(action_url)
+        .headers(headers.clone())
+        .form(data)
+        .send()
+        .await
+        .map_err(|e| format!("Error submitting form: {}", e))?;
+    // 헤더를 먼저 복사하여 저장합니다.
+    let headers = response.headers().clone();
+
+    // Log the status and the headers of the response to diagnose issues.
+    println!("Response status: {}", response.status());
+    println!("Response headers: {:?}", response.headers());
+
+    let body = response.text().await.unwrap_or_default();
+    println!("Response body: {}", body);
+
+    // Parse the response body to JSON and log it if it's JSON
+    let json: serde_json::Result<serde_json::Value> = serde_json::from_str(&body);
+    if let Ok(parsed_json) = json {
+        println!("Parsed JSON response: {}", parsed_json);
     }
 
-    Err("No redirection found. Unable to fetch the bypassed link.".to_string())
+    match headers.get("Location") {
+        Some(location) => location.to_str()
+            .map(|s| s.to_string())
+            .map_err(|e| format!("Error converting location header to string: {}", e)),
+        None => Err("Location header not found".to_string()),
+    }
 }
