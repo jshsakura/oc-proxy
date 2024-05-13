@@ -35,7 +35,7 @@ import SearchIcon from '@mui/icons-material/Search'
 import StopCircleTwoToneIcon from '@mui/icons-material/StopCircleTwoTone'
 import CircularProgressWithLabel from '../../../components/common/CircularProgressWithLabel'
 import { formatBytes } from '../../../components/utils'
-import { DownloadItem } from '../../../types/downloads'
+import { BypassOutput, DownloadItem } from '../../../types/downloads'
 import { invoke, clipboard } from '@tauri-apps/api'
 import FileDownloadOffTwoToneIcon from '@mui/icons-material/FileDownloadOffTwoTone'
 import { BypassResponse, Order, SnackbarState } from '@/types/common'
@@ -152,10 +152,10 @@ const DownloadsTable = () => {
 
 	const fetchBypassedLink = async (url: string): Promise<string> => {
 		try {
-			const response: BypassResponse = await invoke<BypassResponse>('ouo_bypass', {
+			const bypassLink = await invoke<string>('ouo_bypass_exe', {
 				url,
 			})
-			return response.bypassed_link
+			return bypassLink
 		} catch (error) {
 			console.error('Error fetching bypassed link:', error)
 			throw new Error('Failed to fetch the bypassed link.')
@@ -181,11 +181,12 @@ const DownloadsTable = () => {
 
 			console.log(`클립보드의 URL은 유효합니다: ${url.href}`)
 
-			const realUrl = await fetchBypassedLink(url.href)
+			const response: BypassResponse = await fetchBypassedLink(url.href)
+
 			setSnackbarState({
 				...snackbarState,
 				open: true,
-				message: realUrl,
+				message: response.bypassed_link,
 				color: 'success',
 			})
 			return url.href

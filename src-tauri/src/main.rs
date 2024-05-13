@@ -5,10 +5,13 @@ use rusqlite::{Connection, Result};
 use tauri::command;
 use reqwest::{Client};
 use reqwest::header::{HeaderMap, HeaderValue, REFERER, USER_AGENT,CACHE_CONTROL, ACCEPT, ACCEPT_ENCODING, ACCEPT_LANGUAGE, CONNECTION};
-use std::collections::HashMap;
 use scraper::{Html, Selector};
 use serde::{Deserialize, Serialize};
 use tokio;
+use std::collections::HashMap;
+use std::path::Path;
+use std::process::Command;
+use std::str;
 
 #[tokio::main]
 async fn main() {
@@ -17,7 +20,7 @@ async fn main() {
     }
 
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet, select_directory, execute_query, ouo_bypass])
+        .invoke_handler(tauri::generate_handler![greet, select_directory, execute_query, ouo_bypass, ouo_bypass_exe])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
@@ -181,5 +184,30 @@ async fn submit_form_data(client: &Client, action_url: &str, data: &HashMap<Stri
             .map(|s| s.to_string())
             .map_err(|e| format!("Error converting location header to string: {}", e)),
         None => Err("Location header not found".to_string()),
+    }
+}
+
+#[tauri::command]
+async fn ouo_bypass_exe(url: String) -> Result<String, String> {
+    let path = Path::new("src/python/dist/ouo-bypass.exe");
+    if !path.exists() {
+        return Err("Executable path does not exist.".into());
+    }
+
+    let output = Command::new(path)
+        .arg(&url)
+        .output();
+
+    match output {
+        Ok(output) => {
+            if output.status.success() {
+                let result = str::from_utf8(&output.stdout).unwrap_or_default().to_string();
+                Ok(result)
+            } else {
+                let error_message = str::from_utf8(&output.stderr).unwrap_or_default().to_string();
+                Err(format!("Failed to execute the Python application: {}", error_message))
+            }
+        },
+        Err(e) => Err(format!("Error executing Python application: {}", e))
     }
 }

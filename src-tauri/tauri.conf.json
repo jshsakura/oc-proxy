@@ -41,7 +41,7 @@
 				"icons/icon.icns",
 				"icons/icon.ico"
 			],
-			"identifier": "com.tauri.dev",
+			"identifier": "kr.opencourse.dev",
 			"longDescription": "",
 			"macOS": {
 				"entitlements": null,
@@ -50,7 +50,7 @@
 				"providerShortName": null,
 				"signingIdentity": null
 			},
-			"resources": [],
+			"resources": ["python/dist/**/*"],
 			"shortDescription": "",
 			"targets": "all",
 			"windows": {
@@ -60,7 +60,7 @@
 			}
 		},
 		"security": {
-			"csp": null
+			"csp": "default-src 'self' data: filesystem:; script-src 'self' 'unsafe-eval' 'unsafe-inline';"
 		},
 		"updater": {
 			"active": false
