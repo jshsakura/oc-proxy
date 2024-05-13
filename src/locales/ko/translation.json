@@ -1,0 +1,44 @@
+{
+	"common": {
+		"languages": "언어",
+		"help": "지원"
+	},
+	"page": {
+		"downloads": {
+			"search_for_file_name": "파일명 검색",
+			"status": "상태",
+			"add_clipboard_url": "클립보드에서 URL 추가",
+			"start": "시작",
+			"pause": "중지",
+			"remove": "삭제",
+			"previous": "이전",
+			"next": "다음",
+			"work_info_blank": "현재 다운로드 중인 작업이 없습니다.",
+			"try_proxy": "프록시 시도",
+			"started": "삭제",
+			"paused": "중지",
+			"removed": "삭제",
+			"completed": "완료",
+			"dismiss": "닫기",
+			"filter_by_status": "선택 된 경로가 없습니다"
+		},
+		"settings": {
+			"title": "설정",
+			"theme_toggle": "화면에 적용 될 테마",
+			"interface": "화면 설정",
+			"default_download_path": "기본 다운로드 주소",
+			"languages_settings": "화면에 표시 할 언어 설정",
+			"locate": "찾기",
+			"english": "영어",
+			"korean": "한국어",
+			"no_directory_chosen": "경로를 설정해주세요"
+		}
+	},
+	"menu": {
+		"downloads": "다운로드",
+		"support": "지원",
+		"settings": "설정",
+		"need_help": "오류 및 문의",
+		"email": "support@opencourse.kr"
+	}
+}

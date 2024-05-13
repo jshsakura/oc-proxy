@@ -3,9 +3,11 @@ import { invoke } from '@tauri-apps/api/tauri'
 import Button from '@mui/joy/Button'
 import Input from '@mui/joy/Input'
 import CreateNewFolderTwoToneIcon from '@mui/icons-material/CreateNewFolderTwoTone'
+import { useTranslation } from 'react-i18next'
 
 const DirectoryPicker: React.FC = () => {
 	const [directory, setDirectory] = useState<string>('')
+	const { t } = useTranslation()
 
 	const selectDirectory = async () => {
 		try {
@@ -21,7 +23,7 @@ const DirectoryPicker: React.FC = () => {
 
 	return (
 		<Input
-			placeholder='No directory chosen'
+			placeholder={t(`page.settings.no_directory_chosen`)}
 			readOnly
 			value={directory}
 			startDecorator={
@@ -30,7 +32,7 @@ const DirectoryPicker: React.FC = () => {
 					color='primary'
 					onClick={selectDirectory}
 					startDecorator={<CreateNewFolderTwoToneIcon />}>
-					Locate
+					{t(`page.settings.locate`)}
 				</Button>
 			}
 			sx={{ width: '100%' }}

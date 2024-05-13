@@ -14,6 +14,7 @@ import Typography from '@mui/joy/Typography'
 import Avatar from '@mui/joy/Avatar'
 import Divider from '@mui/joy/Divider'
 import { GlobalStyles } from '@mui/joy'
+import { useTranslation } from 'react-i18next'
 
 interface NavigationLinkProps {
 	to: string
@@ -71,6 +72,8 @@ const Toggler = ({
 }
 
 const Sidebar = () => {
+	const { t } = useTranslation()
+
 	return (
 		<Sheet
 			className='Sidebar'
@@ -143,7 +146,7 @@ const Sidebar = () => {
 					}}>
 					<NavigationLink
 						to='/'
-						label='Downloads'
+						label={t(`menu.downloads`)}
 						icon={<ArrowCircleDownTwoToneIcon />}
 					/>
 
@@ -206,12 +209,12 @@ const Sidebar = () => {
 					}}>
 					<NavigationLink
 						to='/support'
-						label='Support'
+						label={t(`menu.support`)}
 						icon={<CoffeeTwoToneIcon />}
 					/>
 					<NavigationLink
 						to='/settings'
-						label='Settings'
+						label={t(`menu.settings`)}
 						icon={<SettingsTwoToneIcon />}
 					/>
 				</List>
@@ -224,8 +227,8 @@ const Sidebar = () => {
 					src='https://avatars.githubusercontent.com/u/10691942?v=4'
 				/>
 				<Box sx={{ minWidth: 0, flex: 1 }}>
-					<Typography level='body-sm'>Need help?</Typography>
-					<Typography level='body-xs'>support@opencourse.kr</Typography>
+					<Typography level='body-sm'>{t(`menu.need_help`)}</Typography>
+					<Typography level='body-xs'>{t(`menu.admin_email`)}</Typography>
 				</Box>
 			</Box>
 		</Sheet>

@@ -41,6 +41,7 @@ import FileDownloadOffTwoToneIcon from '@mui/icons-material/FileDownloadOffTwoTo
 import { BypassResponse, Order, SnackbarState } from '@/types/common'
 import Snackbar from '@mui/joy/Snackbar'
 import NotificationsActiveTwoToneIcon from '@mui/icons-material/NotificationsActiveTwoTone'
+import { useTranslation } from 'react-i18next'
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 	if (b[orderBy] < a[orderBy]) {
@@ -107,6 +108,7 @@ const DownloadsTable = () => {
 
 	const [results, setResults] = useState<DownloadItem[]>([])
 	const [error, setError] = useState<string | null>(null)
+	const { t } = useTranslation()
 
 	const [snackbarState, setSnackbarState] = useState<SnackbarState>({
 		open: false,
@@ -199,21 +201,24 @@ const DownloadsTable = () => {
 		}
 	}
 
-	const renderFilters = () => (
-		<FormControl size='sm'>
-			<FormLabel>Status</FormLabel>
-			<Select
-				size='sm'
-				placeholder='Filter by status'
-				slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}>
-				<Option value='T'>Try Proxy</Option>
-				<Option value='S'>Started</Option>
-				<Option value='P'>Paused</Option>
-				<Option value='R'>Removed</Option>
-				<Option value='C'>Completed</Option>
-			</Select>
-		</FormControl>
-	)
+	const renderFilters = () => {
+		return (
+			<FormControl size='sm'>
+				<FormLabel>{t(`page.downloads.status`)}</FormLabel>
+				<Select
+					size='sm'
+					placeholder={t(`page.downloads.filter_by_status`)}
+					slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}>
+					<Option value='T'>{t(`page.downloads.try_proxy`)}</Option>
+					<Option value='S'>{t(`page.downloads.started`)}</Option>
+					<Option value='P'>{t(`page.downloads.paused`)}</Option>
+					<Option value='R'>{t(`page.downloads.removed`)}</Option>
+					<Option value='C'>{t(`page.downloads.completed`)}</Option>
+				</Select>
+			</FormControl>
+		)
+	}
+
 	return (
 		<>
 			<Sheet
@@ -265,7 +270,7 @@ const DownloadsTable = () => {
 					},
 				}}>
 				<FormControl sx={{ flex: 1 }} size='sm'>
-					<FormLabel>Search for File Name</FormLabel>
+					<FormLabel>{t(`page.downloads.search_for_file_name`)}</FormLabel>
 					<Input size='sm' placeholder='Search' startDecorator={<SearchIcon />} />
 				</FormControl>
 				{renderFilters()}
@@ -417,7 +422,7 @@ const DownloadsTable = () => {
 										}}
 									/>
 									<Typography level='body-md'>
-										현재 다운로드 중인 작업이 없습니다.
+										{t(`page.downloads.work_info_blank`)}
 									</Typography>
 								</td>
 							</tr>
@@ -446,7 +451,7 @@ const DownloadsTable = () => {
 							style={{ marginRight: '8px' }}
 							variant='soft'
 							onClick={fetchAndValidateURL}>
-							Add Clipboard URL
+							{t(`page.downloads.add_clipboard_url`)}
 						</Button>
 					</Box>
 					<Box>
@@ -456,7 +461,7 @@ const DownloadsTable = () => {
 							size='sm'
 							style={{ marginLeft: '8px' }}
 							variant='soft'>
-							Start
+							{t(`page.downloads.start`)}
 						</Button>
 						<Button
 							color='warning'
@@ -464,7 +469,7 @@ const DownloadsTable = () => {
 							size='sm'
 							style={{ marginLeft: '8px' }}
 							variant='soft'>
-							Pause
+							{t(`page.downloads.pause`)}
 						</Button>
 
 						<Button
@@ -473,7 +478,7 @@ const DownloadsTable = () => {
 							size='sm'
 							style={{ marginLeft: '8px' }}
 							variant='soft'>
-							Remove
+							{t(`page.downloads.remove`)}
 						</Button>
 					</Box>
 				</Box>
@@ -495,7 +500,7 @@ const DownloadsTable = () => {
 					variant='outlined'
 					color='neutral'
 					startDecorator={<KeyboardArrowLeftIcon />}>
-					Previous
+					{t(`page.downloads.previous`)}
 				</Button>
 
 				<Box sx={{ flex: 1 }} />
@@ -515,7 +520,7 @@ const DownloadsTable = () => {
 					variant='outlined'
 					color='neutral'
 					endDecorator={<KeyboardArrowRightIcon />}>
-					Next
+					{t(`page.downloads.next`)}
 				</Button>
 			</Box>
 			<Snackbar
@@ -529,7 +534,7 @@ const DownloadsTable = () => {
 						size='sm'
 						variant='soft'
 						color={color}>
-						Dismiss
+						{t(`page.downloads.dismiss`)}
 					</Button>
 				}
 				variant='soft'

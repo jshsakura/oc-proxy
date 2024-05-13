@@ -1,0 +1,44 @@
+{
+	"common": {
+		"languages": "Languages",
+		"help": "Help"
+	},
+	"page": {
+		"downloads": {
+			"search_for_file_name": "Search for File Name",
+			"status": "Status",
+			"add_clipboard_url": "Add Clipboard URL",
+			"start": "Start",
+			"pause": "Pause",
+			"remove": "Remove",
+			"previous": "Previous",
+			"next": "Next",
+			"work_info_blank": "There are currently no tasks downloading.",
+			"try_proxy": "Try Proxy",
+			"started": "Started",
+			"paused": "Paused",
+			"removed": "Removed",
+			"completed": "Completed",
+			"dismiss": "Dismiss",
+			"filter_by_status": "Filter by status"
+		}
+	},
+	"settings": {
+		"title": "Settings",
+		"theme_toggle": "Interface Theme Toggle",
+		"interface": "Interface",
+		"default_download_path": "Default Download Path",
+		"languages_settings": "Interface language settings",
+		"locate": "Locate",
+		"english": "English",
+		"korean": "Korean",
+		"no_directory_chosen": "No directory chosen"
+	},
+	"menu": {
+		"downloads": "Downloads",
+		"support": "Support",
+		"settings": "Settings",
+		"need_help": "Need Help?",
+		"admin_email": "support@opencourse.kr"
+	}
+}
