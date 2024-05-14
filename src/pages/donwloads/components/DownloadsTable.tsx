@@ -152,13 +152,12 @@ const DownloadsTable = () => {
 
 	const fetchBypassedLink = async (url: string): Promise<string> => {
 		try {
-			const bypassLink = await invoke<string>('ouo_bypass_exe', {
-				url,
-			})
-			return bypassLink
+			const output: string = await invoke('ouo_bypass_exe', { url })
+			console.log('Bypassed URL:', output)
+			return output
 		} catch (error) {
-			console.error('Error fetching bypassed link:', error)
-			throw new Error('Failed to fetch the bypassed link.')
+			console.error('Error:', error)
+			return ''
 		}
 	}
 
@@ -181,14 +180,15 @@ const DownloadsTable = () => {
 
 			console.log(`클립보드의 URL은 유효합니다: ${url.href}`)
 
-			const response: BypassResponse = await fetchBypassedLink(url.href)
+			const response: string = await fetchBypassedLink(url.href)
 
 			setSnackbarState({
 				...snackbarState,
 				open: true,
-				message: response.bypassed_link,
+				message: response,
 				color: 'success',
 			})
+
 			return url.href
 		} catch (error) {
 			console.error('클립보드의 내용이 유효한 URL이 아닙니다.', error)

@@ -3,15 +3,15 @@
 
 use rusqlite::{Connection, Result};
 use tauri::command;
+use tokio::process::Command;
 use reqwest::{Client};
 use reqwest::header::{HeaderMap, HeaderValue, REFERER, USER_AGENT,CACHE_CONTROL, ACCEPT, ACCEPT_ENCODING, ACCEPT_LANGUAGE, CONNECTION};
 use scraper::{Html, Selector};
 use serde::{Deserialize, Serialize};
 use tokio;
 use std::collections::HashMap;
-use std::path::Path;
-use std::process::Command;
 use std::str;
+use std::path::PathBuf;
 
 #[tokio::main]
 async fn main() {
@@ -189,25 +189,36 @@ async fn submit_form_data(client: &Client, action_url: &str, data: &HashMap<Stri
 
 #[tauri::command]
 async fn ouo_bypass_exe(url: String) -> Result<String, String> {
-    let path = Path::new("src/python/dist/ouo-bypass.exe");
-    if !path.exists() {
+    let mut script_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    script_path.push("resources/ouo-bypass.exe");
+    println!("Executable path: {:?}", script_path);
+    
+    if !script_path.exists() {
         return Err("Executable path does not exist.".into());
     }
 
-    let output = Command::new(path)
+    let output = Command::new(script_path)
         .arg(&url)
-        .output();
+        .output()
+        .await
+        .map_err(|e| format!("failed to execute process: {}", e))?;
 
-    match output {
-        Ok(output) => {
-            if output.status.success() {
-                let result = str::from_utf8(&output.stdout).unwrap_or_default().to_string();
-                Ok(result)
-            } else {
-                let error_message = str::from_utf8(&output.stderr).unwrap_or_default().to_string();
-                Err(format!("Failed to execute the Python application: {}", error_message))
-            }
-        },
-        Err(e) => Err(format!("Error executing Python application: {}", e))
+    println!("Python script output (raw): {:?}", output);
+
+    if output.status.success() {
+        let stdout = str::from_utf8(&output.stdout).unwrap_or_default().to_string();
+        let stderr = str::from_utf8(&output.stderr).unwrap_or_default().to_string();
+
+        println!("Python script stdout: {}", stdout);
+        println!("Python script stderr: {}", stderr);
+
+        if stdout.is_empty() {
+            return Err("No output from the Python script.".into());
+        }
+        Ok(stdout)
+    } else {
+        let error_message = str::from_utf8(&output.stderr).unwrap_or_default().to_string();
+        println!("Python script error: {}", error_message);
+        Err(format!("Failed to execute the Python application: {}", error_message))
     }
 }

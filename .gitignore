@@ -37,5 +37,5 @@ next-env.d.ts
 
 # python
 .venv
-src-tauri/python/build/*
-src-tauri/python/dist
+src-python/build/
+src-python/dist/

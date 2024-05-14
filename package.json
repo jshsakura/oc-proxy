@@ -8,6 +8,7 @@
 		"start": "next start -p 3001",
 		"lint": "next lint",
 		"test": "yarn tauri dev",
+		"cargo-build": "cargo tauri dev",
 		"tauri-build": "yarn tauri build"
 	},
 	"dependencies": {

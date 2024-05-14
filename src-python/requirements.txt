@@ -1,0 +1,12 @@
+lxml==4.9.3
+curl_cffi==0.5.7
+urllib3==2.0.4
+requests
+beautifulsoup4
+pyinstaller==5.13.2
+
+# pyinstaller --windowed --noconsole --onefile --noconfirm --clean --hiddenimport=_cffi_backend --paths "C:\Users\jshsa\AppData\Local\Programs\Python\Python311\Lib" ./ouo-bypass.py
+# pyinstaller --onefile --noconsole --add-data "cacert.pem;." --hidden-import=_cffi_backend ouo-bypass.py
+# pyinstaller ouo-bypass.spec
+
+# pyinstaller --onefile --noconsole --add-data "C:\Users\jshsa\AppData\Local\Programs\Python\Python311\Lib\site-packages\curl_cffi;curl_cffi" --hidden-import=_cffi_backend ouo-bypass.py
