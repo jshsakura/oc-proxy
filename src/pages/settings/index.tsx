@@ -1,20 +1,19 @@
-import Box from '@mui/joy/Box'
-import Typography from '@mui/joy/Typography'
-import Table from '@mui/joy/Table'
+import React from 'react'
+import { Box, Select, Table, Typography } from '@mui/joy'
 import ColorSchemeToggle from '@/components/common/ColorSchemeToggle'
-import DirectoryPicker from '@/components/common/DirectoryPicker'
-import Button from '@mui/joy/Button'
-import ButtonGroup from '@mui/joy/ButtonGroup'
-import i18n from '../../locales/i18n'
-import { useTranslation } from 'react-i18next'
 
-// 언어 변경하기
-const changeLanguage = (lang: string) => {
-	i18n.changeLanguage(lang)
+const DirectoryPicker: React.FC<DirectoryPickerProps> = ({
+	onChange,
+	...props
+}) => {
+	return <input type='file' onChange={onChange} {...props} />
 }
 
-const Settings = () => {
-	const { t } = useTranslation()
+const SettingsPage: React.FC = () => {
+	const updateLanguage = (lang: string) => {
+		console.log(`Selected language: ${lang}`)
+	}
+
 	return (
 		<>
 			<Box
@@ -28,12 +27,14 @@ const Settings = () => {
 					justifyContent: 'space-between',
 				}}>
 				<Typography level='h2' component='h1' sx={{ mb: 1 }}>
-					{t(`page.settings.title`)}
+					Settings Title
 				</Typography>
 			</Box>
+
 			<Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-				<Typography level='title-md'>{t(`page.settings.interface`)}</Typography>
+				<Typography level='title-md'>Interface Title</Typography>
 			</Box>
+
 			<Table
 				aria-label='basic table'
 				variant='soft'
@@ -41,28 +42,50 @@ const Settings = () => {
 				size='lg'
 				sx={{ borderRadius: '5px' }}>
 				<tr>
-					<td width='40%'>{t(`page.settings.theme_toggle`)}</td>
+					<td width='40%'>Theme Toggle</td>
 					<td>
 						<ColorSchemeToggle sx={{ ml: 'auto' }} />
 					</td>
 				</tr>
+
 				<tr>
-					<td>{t(`page.settings.languages_settings`)}</td>
+					<td>Language Settings</td>
 					<td>
-						<DirectoryPicker />
+						<DirectoryPicker
+							onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+								const selectedLang = event.target.value
+								updateLanguage(selectedLang)
+							}}
+						/>
 					</td>
 				</tr>
+
 				<tr>
-					<td>{t(`page.settings.default_download_path`)}</td>
+					<td>Default Download Path</td>
+					<td width='40%'>Theme Toggle</td>
 					<td>
-						<ButtonGroup variant='solid'>
-							<Button onClick={() => changeLanguage('en')}>
-								{t(`page.settings.english`)}
-							</Button>
-							<Button onClick={() => changeLanguage('ko')}>
-								{t(`page.settings.korean`)}
-							</Button>
-						</ButtonGroup>
+						<Select
+							variant='plain'
+							size='sm'
+							defaultValue={'en'}
+							onChange={(
+								event: React.MouseEvent | React.KeyboardEvent | React.FocusEvent | null,
+								value: string | null,
+							) => {
+								if (value) {
+									updateLanguage(value)
+								}
+							}}
+							sx={{
+								p: 1,
+								border: '1px solid',
+								borderColor: 'neutral.outline',
+								borderRadius: '8px',
+							}}>
+							<option value='en'>English</option>
+							<option value='ko'>Korean</option>
+						</Select>
+						<ColorSchemeToggle sx={{ ml: 'auto' }} />
 					</td>
 				</tr>
 			</Table>
@@ -70,4 +93,8 @@ const Settings = () => {
 	)
 }
 
-export default Settings
+export default SettingsPage
+
+interface DirectoryPickerProps {
+	onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
+}
