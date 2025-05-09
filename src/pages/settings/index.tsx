@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next'
 
 const Settings = () => {
 	const { t, i18n } = useTranslation()
+	const currentLang = i18n.language
 
 	// 언어 변경하기
 	const changeLanguage = (lang: string) => {
@@ -57,10 +58,16 @@ const Settings = () => {
 					<td>{t(`page.settings.languages_settings`)}</td>
 					<td>
 						<ButtonGroup variant='solid'>
-							<Button onClick={() => changeLanguage('en')}>
+							<Button
+								onClick={() => changeLanguage('en')}
+								className={`lang-button ${currentLang === 'en' ? 'active' : ''}`}
+								color={currentLang === 'en' ? 'primary' : undefined}>
 								{t(`page.settings.english`)}
 							</Button>
-							<Button onClick={() => changeLanguage('ko')}>
+							<Button
+								onClick={() => changeLanguage('ko')}
+								className={`lang-button ${currentLang === 'ko' ? 'active' : ''}`}
+								color={currentLang === 'ko' ? 'primary' : undefined}>
 								{t(`page.settings.korean`)}
 							</Button>
 						</ButtonGroup>
