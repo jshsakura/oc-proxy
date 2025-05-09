@@ -21,18 +21,18 @@
 			"completed": "Completed",
 			"dismiss": "Dismiss",
 			"filter_by_status": "Filter by status"
+		},
+		"settings": {
+			"title": "Settings",
+			"theme_toggle": "Interface Theme Toggle",
+			"interface": "Interface",
+			"default_download_path": "Default Download Path",
+			"languages_settings": "Interface language settings",
+			"locate": "Locate",
+			"english": "English",
+			"korean": "Korean",
+			"no_directory_chosen": "No directory chosen"
 		}
-	},
-	"settings": {
-		"title": "Settings",
-		"theme_toggle": "Interface Theme Toggle",
-		"interface": "Interface",
-		"default_download_path": "Default Download Path",
-		"languages_settings": "Interface language settings",
-		"locate": "Locate",
-		"english": "English",
-		"korean": "Korean",
-		"no_directory_chosen": "No directory chosen"
 	},
 	"menu": {
 		"downloads": "Downloads",
